@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="wrapper">
+            <header>
+                <h1>Documentation</h1>
+            </header>
+            <aside class="sidebar">
+                	<ul>
+<li>Preface
+
+<ul>
+<li><a href="index.html">Introduction</a></li>
+<li><a href="contributing.html">Contributing</a></li>
+</ul></li>
+<li>Getting Started
+
+<ul>
+<li><a href="installation.html">Installation</a></li>
+<li><a href="configuration.html">Configuration</a></li>
+<li><a href="lifecycle.html">Request Lifecycle</a></li>
+<li><a href="routing.html">Routing</a></li>
+<li><a href="requests.html">Requests &amp; Input</a></li>
+<li><a href="responses.html">Views &amp; Responses</a></li>
+<li><a href="controllers.html">Controllers</a></li>
+<li><a href="errors.html">Errors &amp; Logging</a></li>
+</ul></li>
+<li>Learning More
+
+<ul>
+<li><a href="cache.html">Cache</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="html.html">Forms &amp; HTML</a></li>
+<li><a href="ioc.html">IoC Container</a></li>
+<li><a href="localization.html">Localization</a></li>
+<li><a href="mail.html">Mail</a></li>
+<li><a href="packages.html">Package Development</a></li>
+<li><a href="pagination.html">Pagination</a></li>
+<li><a href="queues.html">Queues</a></li>
+<li><a href="security.html">Security</a></li>
+<li><a href="session.html">Session</a></li>
+<li><a href="templates.html">Templates</a></li>
+<li><a href="testing.html">Unit Testing</a></li>
+<li><a href="validation.html">Validation</a></li>
+</ul></li>
+<li>Database
+
+<ul>
+<li><a href="database.html">Basic Usage</a></li>
+<li><a href="queries.html">Query Builder</a></li>
+<li><a href="eloquent.html">Eloquent ORM</a></li>
+<li><a href="schema.html">Schema Builder</a></li>
+<li><a href="migrations.html">Migrations &amp; Seeding</a></li>
+<li><a href="redis.html">Redis</a></li>
+</ul></li>
+<li>Artisan CLI
+
+<ul>
+<li><a href="artisan.html">Overview</a></li>
+<li><a href="commands.html">Development</a></li>
+</ul></li>
+</ul>
+            </aside>
+            <section class="content">
+                	<h1>Requests &amp; Input</h1>
+
+<ul>
+<li><a href="requests.html#basic-input">Basic Input</a></li>
+<li><a href="requests.html#cookies">Cookies</a></li>
+<li><a href="requests.html#old-input">Old Input</a></li>
+<li><a href="requests.html#files">Files</a></li>
+<li><a href="requests.html#request-information">Request Information</a></li>
+</ul>
+
+<p><a name="basic-input"></a></p>
+
+<h2>Basic Input</h2>
+
+<p>You may access all user input with a few simple methods. You do not need to worry about the HTTP verb used for the request, as input is accessed in the same way for all verbs.</p>
+
+<p><strong>Retrieving An Input Value</strong></p>
+
+<pre><code>$name = Input::get('name');
+</code></pre>
+
+<p><strong>Retrieving A Default Value If The Input Value Is Absent</strong></p>
+
+<pre><code>$name = Input::get('name', 'Sally');
+</code></pre>
+
+<p><strong>Determining If An Input Value Is Present</strong></p>
+
+<pre><code>if (Input::has('name'))
+{
+    //
+}
+</code></pre>
+
+<p><strong>Getting All Input For The Request</strong></p>
+
+<pre><code>$input = Input::all();
+</code></pre>
+
+<p><strong>Getting Only Some Of The Request Input</strong></p>
+
+<pre><code>$input = Input::only('username', 'password');
+
+$input = Input::except('credit_card');
+</code></pre>
+
+<p>Some JavaScript libraries such as Backbone may send input to the application as JSON. You may access this data via <code>Input::get</code> like normal.</p>
+
+<p><a name="cookies"></a></p>
+
+<h2>Cookies</h2>
+
+<p>All cookies created by the Laravel framework are encrypted and signed with an authentication code, meaning they will be considered invalid if they have been changed by the client.</p>
+
+<p><strong>Retrieving A Cookie Value</strong></p>
+
+<pre><code>$value = Cookie::get('name');
+</code></pre>
+
+<p><strong>Attaching A New Cookie To A Response</strong></p>
+
+<pre><code>$response = Response::make('Hello World');
+
+$response-&gt;withCookie(Cookie::make('name', 'value', $minutes));
+</code></pre>
+
+<p><strong>Creating A Cookie That Lasts Forever</strong></p>
+
+<pre><code>$cookie = Cookie::forever('name', 'value');
+</code></pre>
+
+<p><a name="old-input"></a></p>
+
+<h2>Old Input</h2>
+
+<p>You may need to keep input from one request until the next request. For example, you may need to re-populate a form after checking it for validation errors.</p>
+
+<p><strong>Flashing Input To The Session</strong></p>
+
+<pre><code>Input::flash();
+</code></pre>
+
+<p><strong>Flashing Only Some Input To The Session</strong></p>
+
+<pre><code>Input::flashOnly('username', 'email');
+
+Input::flashExcept('password');
+</code></pre>
+
+<p>Since you often will want to flash input in association with a redirect to the previous page, you may easily chain input flashing onto a redirect.</p>
+
+<pre><code>return Redirect::to('form')-&gt;withInput();
+
+return Redirect::to('form')-&gt;withInput(Input::except('password'));
+</code></pre>
+
+<blockquote>
+  <p><strong>Note:</strong> You may flash other data across requests using the <a href="session.html">Session</a> class.</p>
+</blockquote>
+
+<p><strong>Retrieving Old Data</strong></p>
+
+<pre><code>Input::old('username');
+</code></pre>
+
+<p><a name="files"></a></p>
+
+<h2>Files</h2>
+
+<p><strong>Retrieving An Uploaded File</strong></p>
+
+<pre><code>$file = Input::file('photo');
+</code></pre>
+
+<p><strong>Determining If A File Was Uploaded</strong></p>
+
+<pre><code>if (Input::hasFile('photo'))
+{
+    //
+}
+</code></pre>
+
+<p>The object returned by the <code>file</code> method is an instance of the <code>Symfony\Component\HttpFoundation\File\UploadedFile</code> class, which extends the PHP <code>SplFileInfo</code> class and provides a variety of methods for interacting with the file.</p>
+
+<p><strong>Moving An Uploaded File</strong></p>
+
+<pre><code>Input::file('photo')-&gt;move($destinationPath);
+
+Input::file('photo')-&gt;move($destinationPath, $fileName);
+</code></pre>
+
+<p><strong>Retrieving The Path To An Uploaded File</strong></p>
+
+<pre><code>$path = Input::file('photo')-&gt;getRealPath();
+</code></pre>
+
+<p><strong>Retrieving The Size Of An Uploaded File</strong></p>
+
+<pre><code>$size = Input::file('photo')-&gt;getSize();
+</code></pre>
+
+<p><strong>Retrieving The MIME Type Of An Uploaded File</strong></p>
+
+<pre><code>$mime = Input::file('photo')-&gt;getMimeType();
+</code></pre>
+
+<p><a name="request-information"></a></p>
+
+<h2>Request Information</h2>
+
+<p>The <code>Request</code> class provides many methods for examining the HTTP request for your application and extends the <code>Symfony\Component\HttpFoundation\Request</code> class. Here are some of the highlights.</p>
+
+<p><strong>Retrieving The Request URI</strong></p>
+
+<pre><code>$uri = Request::path();
+</code></pre>
+
+<p><strong>Determining If The Request Path Matches A Pattern</strong></p>
+
+<pre><code>if (Request::is('admin/*'))
+{
+    //
+}
+</code></pre>
+
+<p><strong>Get The Request URL</strong></p>
+
+<pre><code>$url = Request::url();
+</code></pre>
+
+<p><strong>Retrieve A Request URI Segment</strong></p>
+
+<pre><code>$segment = Request::segment(1);
+</code></pre>
+
+<p><strong>Retrieving A Request Header</strong></p>
+
+<pre><code>$value = Request::header('Content-Type');
+</code></pre>
+
+<p><strong>Retrieving Values From $_SERVER</strong></p>
+
+<pre><code>$value = Request::server('PATH_INFO');
+</code></pre>
+
+<p><strong>Determine If The Request Is Using AJAX</strong></p>
+
+<pre><code>if (Request::ajax())
+{
+    //
+}
+</code></pre>
+
+<p><strong>Determining If The Request Is Over HTTPS</strong></p>
+
+<pre><code>if (Request::secure())
+{
+    //
+}
+</code></pre>
+                <footer>
+                    <p><a href="http://four.laravel.com" title="Laravel 4 Documentation">Laravel 4 Documentation</a> grabbed by <a href="http://roes-wibowo.com" title="Roes Wibowo">Roes Wibowo</a>.</p>
+                </footer>
+            </section>
+            <div class="clearfix"></div>
+        </div>
+
+        <script src="js/vendor/jquery-1.8.2.min.js"></script>
+        
+        <script src="js/vendor/prettify.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            var _gaq=[['_setAccount','UA-37104170-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>

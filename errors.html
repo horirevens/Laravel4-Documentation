@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="wrapper">
+            <header>
+                <h1>Documentation</h1>
+            </header>
+            <aside class="sidebar">
+                	<ul>
+<li>Preface
+
+<ul>
+<li><a href="index.html">Introduction</a></li>
+<li><a href="contributing.html">Contributing</a></li>
+</ul></li>
+<li>Getting Started
+
+<ul>
+<li><a href="installation.html">Installation</a></li>
+<li><a href="configuration.html">Configuration</a></li>
+<li><a href="lifecycle.html">Request Lifecycle</a></li>
+<li><a href="routing.html">Routing</a></li>
+<li><a href="requests.html">Requests &amp; Input</a></li>
+<li><a href="responses.html">Views &amp; Responses</a></li>
+<li><a href="controllers.html">Controllers</a></li>
+<li><a href="errors.html">Errors &amp; Logging</a></li>
+</ul></li>
+<li>Learning More
+
+<ul>
+<li><a href="cache.html">Cache</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="html.html">Forms &amp; HTML</a></li>
+<li><a href="ioc.html">IoC Container</a></li>
+<li><a href="localization.html">Localization</a></li>
+<li><a href="mail.html">Mail</a></li>
+<li><a href="packages.html">Package Development</a></li>
+<li><a href="pagination.html">Pagination</a></li>
+<li><a href="queues.html">Queues</a></li>
+<li><a href="security.html">Security</a></li>
+<li><a href="session.html">Session</a></li>
+<li><a href="templates.html">Templates</a></li>
+<li><a href="testing.html">Unit Testing</a></li>
+<li><a href="validation.html">Validation</a></li>
+</ul></li>
+<li>Database
+
+<ul>
+<li><a href="database.html">Basic Usage</a></li>
+<li><a href="queries.html">Query Builder</a></li>
+<li><a href="eloquent.html">Eloquent ORM</a></li>
+<li><a href="schema.html">Schema Builder</a></li>
+<li><a href="migrations.html">Migrations &amp; Seeding</a></li>
+<li><a href="redis.html">Redis</a></li>
+</ul></li>
+<li>Artisan CLI
+
+<ul>
+<li><a href="artisan.html">Overview</a></li>
+<li><a href="commands.html">Development</a></li>
+</ul></li>
+</ul>
+            </aside>
+            <section class="content">
+                	<h1>Errors &amp; Logging</h1>
+
+<ul>
+<li><a href="errors.html#error-detail">Error Detail</a></li>
+<li><a href="errors.html#handling-errors">Handling Errors</a></li>
+<li><a href="errors.html#http-exceptions">HTTP Exceptions</a></li>
+<li><a href="errors.html#handling-404-errors">Handling 404 Errors</a></li>
+<li><a href="errors.html#logging">Logging</a></li>
+</ul>
+
+<p><a name="error-detail"></a></p>
+
+<h2>Error Detail</h2>
+
+<p>By default, error detail is enabled for your application. This means that when an error occurs you will be showed an error page with a detailed stack trace and error message. You may turn off error details by setting the <code>debug</code> option in your <code>app/config/app.php</code> file to <code>false</code>. <strong>It is strongly recommended that you turn off error detail in a production environment.</strong></p>
+
+<p><a name="handling-errors"></a></p>
+
+<h2>Handling Errors</h2>
+
+<p>By default, the <code>app/start/global.php</code> file contains an error handler for all exceptions:</p>
+
+<pre><code>App::error(function(Exception $exception)
+{
+    Log::error($exception);
+});
+</code></pre>
+
+<p>This is the most basic error handler. However, you may specify more handlers if needed. Handlers are called based on the type-hint of the Exception they handle. For example, you may create a handler that only handles <code>RuntimeException</code> instances:</p>
+
+<pre><code>App::error(function(RuntimeException $exception)
+{
+    // Handle the exception...
+});
+</code></pre>
+
+<p>If an exception handler returns a response, that response will be sent to the browser and no other error handlers will be called:</p>
+
+<pre><code>App::error(function(InvalidUserException $exception)
+{
+    Log::error($exception);
+
+    return 'Sorry! Something is wrong with this account!';
+});
+</code></pre>
+
+<p>To listen for PHP fatal errors, you may use the <code>App::fatal</code> method:</p>
+
+<pre><code>App::fatal(function($exception)
+{
+    //
+});
+</code></pre>
+
+<p><a name="http-exceptions"></a></p>
+
+<h2>HTTP Exceptions</h2>
+
+<p>Exceptions in respect to HTTP, refer to errors that may occur during a client request. This may be a page not found error (404), an unauthorized error (401) or even a generated 500 error. In order to return such a response, use the following:</p>
+
+<pre><code>App::abort(404, 'Page not found');
+</code></pre>
+
+<p>The first argument, is the HTTP status code, with the following being a custom message you'd like to show with the error.</p>
+
+<p>In order to raise a 401 Unauthorized exception, just do the following:</p>
+
+<pre><code>App::abort(401, 'You are not authorized.');
+</code></pre>
+
+<p>These exceptions can be executed at any time during the request's lifecycle.</p>
+
+<p><a name="handling-404-errors"></a></p>
+
+<h2>Handling 404 Errors</h2>
+
+<p>You may register an error handler that handles all "404 Not Found" errors in your application, allowing you to return custom 404 error pages:</p>
+
+<pre><code>App::missing(function($exception)
+{
+    return Response::view('errors.missing', array(), 404);
+});
+</code></pre>
+
+<p><a name="logging"></a></p>
+
+<h2>Logging</h2>
+
+<p>The Laravel logging facilities provide a simple layer on top of the powerful <a href="http://github.com/seldaek/monolog">Monolog</a>. By default, Laravel is configured to create daily log files for your application, and these files are stored in <code>app/storage/logs</code>. You may write information to these logs like so:</p>
+
+<pre><code>Log::info('This is some useful information.');
+
+Log::warning('Something could be going wrong.');
+
+Log::error('Something is really going wrong.');
+</code></pre>
+
+<p>The logger provides the seven logging levels defined in <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>: <strong>debug</strong>, <strong>info</strong>, <strong>notice</strong>, <strong>warning</strong>, <strong>error</strong>, <strong>critical</strong>, and <strong>alert</strong>.</p>
+
+<p>Monolog has a variety of additional handlers you may use for logging. If needed, you may access the underlying Monolog instance being used by Laravel:</p>
+
+<pre><code>$monolog = Log::getMonolog();
+</code></pre>
+
+<p>You may also register an event to catch all messages passed to the log:</p>
+
+<p><strong>Registering A Log Listener</strong></p>
+
+<pre><code>Log::listen(function($level, $message, $context)
+{
+    //
+});
+</code></pre>
+                <footer>
+                    <p><a href="http://four.laravel.com" title="Laravel 4 Documentation">Laravel 4 Documentation</a> grabbed by <a href="http://roes-wibowo.com" title="Roes Wibowo">Roes Wibowo</a>.</p>
+                </footer>
+            </section>
+            <div class="clearfix"></div>
+        </div>
+
+        <script src="js/vendor/jquery-1.8.2.min.js"></script>
+        
+        <script src="js/vendor/prettify.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            var _gaq=[['_setAccount','UA-37104170-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
